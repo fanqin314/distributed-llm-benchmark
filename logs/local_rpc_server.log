@@ -1,0 +1,28 @@
+load_backend: loaded RPC backend from D:\workbuddy\Decentralized AI\tools\llama\ggml-rpc.dll
+load_backend: loaded CPU backend from D:\workbuddy\Decentralized AI\tools\llama\ggml-cpu-zen4.dll
+Starting RPC server v7.0.0
+  endpoint       : 127.0.0.1:50053
+  local cache    : n/a
+Devices:
+  CPU: AMD Ryzen 9 8940HX with Radeon Graphics         (31968 MiB, 16769 MiB free)
+  transport      : TCP
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed

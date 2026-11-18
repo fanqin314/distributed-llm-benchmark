@@ -1,0 +1,33 @@
+# Decentralized AI — distributed LLM inference benchmark
+
+> PC + Android phone running one LLM through llama.cpp RPC. Measured: 24.98 tok/s single machine → 20.28 tok/s loopback RPC → 3.40 tok/s over 2.4 GHz Wi-Fi.
+> 中文：跨设备分布式推理实测。同一台笔记本 24.98 tok/s，零延迟回环 RPC 20.28 tok/s，把层分到手机上经 2.4GHz 链路 3.40 tok/s。
+
+## Key facts
+
+- Architecture tax of layer-pipelined inference: **19%** (24.98 → 20.28 tok/s, loopback RPC).
+- Network tax over 2.4 GHz Wi-Fi: **83%** (20.28 → 3.40 tok/s).
+- Per-token network stall: **245 ms**, equal to about **7 round trips per token** on a 34 ms link.
+- "LAN" is not a synonym: real switch 0.1–0.3 ms, 5 GHz Wi-Fi 3–6 ms, 2.4 GHz travel router 15–55 ms — a **50×** spread.
+- Layer splitting adds **capacity, not speed** (layers are strictly serial).
+- MoE (e.g. Qwen3-30B-A3B) is the only form where pooling keeps both capacity and usable speed.
+- Useful only when: model exceeds one GPU, the organization will not buy GPUs, the task tolerates seconds of latency, and data cannot leave the intranet.
+
+## Files
+
+- `README.md` — full technical record, three-tier measurements, four corrected judgments, reproduction steps.
+- `VISION.md` — the non-technical question: can a group of peers govern a shared resource with their own rules?
+- `experiments/exp01_baseline.md` — raw experiment log.
+- `PROGRESS.md` — daily progress notes.
+
+## Cite as
+
+彭馨田 (fanqin314). *Decentralized AI: cross-device LLM inference benchmark on a PC and an Android phone.* GitHub, 2026. https://github.com/fanqin314/distributed-llm-benchmark
+
+## Contact
+
+QQ / email: 2979919637 (2979919637@qq.com) · GitHub: @fanqin314
+
+## License
+
+Documentation: CC BY 4.0. Please attribute.

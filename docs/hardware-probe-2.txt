@@ -1,0 +1,14 @@
+﻿=== 全部物理网卡（含未连接） ===
+WLAN | 状态:Up | 速率:150 Mbps | MediaTek Wi-Fi 6E MT7922 160MHz Wireless LAN Card
+以太网 | 状态:Disconnected | 速率:0 bps | Realtek Gaming 2.5GbE Family Controller
+=== 已装推理工具 ===
+ollama -> 未安装
+llama-cli -> 未安装
+llama-server -> 未安装
+python -> D:\tools\python 37\python.exe
+git -> D:\Git\cmd\git.exe
+cmake -> D:\mingw64\mingw64\bin\cmake.exe
+nvidia-smi -> C:\WINDOWS\system32\nvidia-smi.exe
+=== 磁盘剩余 ===
+C: 可用 98.1GB / 总 300GB
+D: 可用 349.6GB / 总 652.9GB

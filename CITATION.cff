@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use these measurements, please cite this repository."
+title: "Decentralized AI: cross-device LLM inference benchmark on a PC and an Android phone"
+abstract: >-
+  Measured layer-pipelined LLM inference across a Windows laptop and an Android phone
+  using llama.cpp RPC. Single machine 24.98 tok/s, loopback RPC 20.28 tok/s (-19%),
+  PC + phone over 2.4 GHz Wi-Fi 3.40 tok/s (-83%). The 19% is architecture tax; the 83%
+  is network tax. Concludes that layer splitting adds capacity, not speed, and that MoE
+  is the only form where pooling wins on both.
+authors:
+  - family-names: "彭馨田"
+    alias: fanqin314
+    email: 2979919637@qq.com
+    affiliation: "Sichuan University of Science and Engineering"
+date-released: "2026-10-29"
+url: "https://github.com/fanqin314/distributed-llm-benchmark"
+keywords:
+  - distributed inference
+  - LLM
+  - llama.cpp
+  - RPC
+  - edge AI
+  - MoE
+  - benchmark
+  - 分布式推理
+license: CC-BY-4.0

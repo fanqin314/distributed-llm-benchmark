@@ -1,0 +1,8 @@
+load_backend: loaded RPC backend from D:\workbuddy\Decentralized AI\tools\llama\ggml-rpc.dll
+load_backend: loaded CPU backend from D:\workbuddy\Decentralized AI\tools\llama\ggml-cpu-zen4.dll
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 1.5B Q4_K - Medium       |   1.04 GiB |     1.78 B | RPC        |  -1 |            pp64 |          7.89 ± 0.00 |
+| qwen2 1.5B Q4_K - Medium       |   1.04 GiB |     1.78 B | RPC        |  -1 |            tg32 |          3.40 ± 0.00 |
+
+build: d81235049 (11429)

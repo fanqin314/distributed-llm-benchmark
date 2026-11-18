@@ -1,0 +1,12 @@
+﻿=== CPU ===
+AMD Ryzen 9 8940HX with Radeon Graphics         | 物理核 16 | 逻辑核 32 | 主频 2401MHz
+=== 内存条 ===
+容量 32GB | 频率 5600MHz | 厂商 Micron Technology | 型号 CT32G56C46S5.M8BA   
+总内存: 31.2 GB
+=== 显卡 ===
+AMD Radeon(TM) 610M | 显存 0.5GB | 驱动 32.0.13034.7001
+=== 网卡 ===
+WLAN | 150 Mbps | MediaTek Wi-Fi 6E MT7922 160MHz Wireless LAN Card
+vEthernet (WSL (Hyper-V firewall)) | 10 Gbps | Hyper-V Virtual Ethernet Adapter
+=== 磁盘 ===
+YMTC PC41Q-1TB-B | 954GB | SCSI

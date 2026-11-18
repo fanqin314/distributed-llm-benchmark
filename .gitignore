@@ -1,0 +1,12 @@
+# 二进制、模型与内部工具不入库
+models/
+tools/llama/
+*.zip
+*.part
+*.gguf
+.workbuddy/
+
+# 系统噪音
+Thumbs.db
+desktop.ini
+.DS_Store
