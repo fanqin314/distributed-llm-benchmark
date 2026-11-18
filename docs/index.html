@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decentralized AI · 跨设备分布式 LLM 推理实测（PC + Android）</title>
+<meta name="description" content="同一台笔记本跑 1.5B 模型 24.98 tok/s，本机回环 RPC 20.28 tok/s，把层分到 Android 手机上经 2.4GHz Wi-Fi 掉到 3.40 tok/s。拆分只掉 19%，网络掉了 83%。“内网”不是同义词：真交换机 0.1–0.3ms / 5GHz 3–6ms / 2.4GHz 15–55ms。">
+<meta name="keywords" content="distributed inference, LLM, llama.cpp RPC, edge AI, MoE, Android, benchmark, 分布式推理, 跨设备推理, 局域网">
+<meta name="author" content="彭馨田 (fanqin314)">
+<link rel="canonical" href="https://fanqin314.github.io/distributed-llm-benchmark/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Decentralized AI · 跨设备分布式 LLM 推理实测">
+<meta property="og:description" content="24.98 → 20.28 → 3.40 tok/s：拆分税 19%，网络税 83%。">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "Decentralized AI: cross-device LLM inference benchmark on a PC and an Android phone",
+  "alternativeHeadline": "跨设备分布式推理实测：PC + Android，llama.cpp RPC",
+  "abstract": "Running Qwen2.5-1.5B on one laptop reaches 24.98 tok/s; the same model through llama.cpp RPC over loopback reaches 20.28 tok/s (-19%); splitting layers onto an Android phone over 2.4 GHz Wi-Fi drops to 3.40 tok/s (-83%). Layer-pipelined inference is cheap to split and expensive to network. 'LAN' is not a synonym: a real switch is 0.1-0.3 ms RTT, 5 GHz Wi-Fi 3-6 ms, a 2.4 GHz travel router 15-55 ms.",
+  "datePublished": "2026-10-29",
+  "inLanguage": ["zh-CN", "en"],
+  "author": {"@type": "Person", "name": "彭馨田", "alternateName": "fanqin314", "email": "2979919637@qq.com", "url": "https://github.com/fanqin314"},
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "url": "https://github.com/fanqin314/distributed-llm-benchmark",
+  "keywords": ["distributed inference", "LLM", "llama.cpp", "RPC", "edge AI", "MoE", "benchmark"]
+}
+</script>
+<style>
+  :root { --ink:#1a1512; --paper:#f4efe6; --muted:#6b625a; --accent:#b8704b; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+         font-family: ui-serif, Georgia, "Songti SC", "Noto Serif CJK SC", serif;
+         line-height:1.75; }
+  main { max-width: 760px; margin: 0 auto; padding: 72px 24px 96px; }
+  .kicker { font-family: ui-monospace, "Cascadia Code", monospace; font-size:12px;
+            letter-spacing:.18em; text-transform:uppercase; color:var(--accent); }
+  h1 { font-size: clamp(28px, 5vw, 46px); line-height:1.2; margin:.4em 0 .3em; letter-spacing:-.01em; }
+  .sub { color:var(--muted); font-size:17px; margin-bottom:40px; }
+  .nums { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap:16px; margin:40px 0; }
+  .num { border-top:3px solid var(--ink); padding-top:12px; }
+  .num b { display:block; font-size:30px; font-family: ui-monospace, monospace; letter-spacing:-.02em; }
+  .num span { font-size:13px; color:var(--muted); }
+  h2 { font-size:20px; margin:44px 0 8px; }
+  p { margin:.6em 0; }
+  .quote { border-left:3px solid var(--accent); padding-left:16px; color:var(--ink); font-size:18px; margin:28px 0; }
+  a { color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
+  .links { margin-top:48px; display:flex; flex-wrap:wrap; gap:10px; }
+  .links a { font-family: ui-monospace, monospace; font-size:13px; border:1.5px solid var(--ink);
+             padding:8px 14px; text-decoration:none; border-radius:2px; }
+  .links a:hover { background:var(--ink); color:var(--paper); }
+  footer { margin-top:64px; border-top:1px dashed #c9bfae; padding-top:20px; font-size:13px; color:var(--muted); }
+  code { font-family: ui-monospace, monospace; font-size:.92em; background:rgba(0,0,0,.05); padding:.1em .35em; }
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">Decentralized AI · 2026</div>
+  <h1>把一台电脑和一部手机拼起来，跑同一个大模型</h1>
+  <p class="sub">跨设备分布式 LLM 推理实测。不是为了证明它快，是为了量清楚：“拆分”到底要付多少代价。</p>
+
+  <div class="nums">
+    <div class="num"><b>24.98</b><span>t/s · 单机</span></div>
+    <div class="num"><b>20.28</b><span>t/s · 本机回环 RPC（−19%）</span></div>
+    <div class="num"><b>3.40</b><span>t/s · 手机 + 2.4GHz Wi-Fi（−83%）</span></div>
+  </div>
+
+  <p class="quote">拆分本身很便宜，网络很贵。同一个 RPC 架构，零延迟下几乎无损；那 83% 全是那条链路的账。</p>
+
+  <h2>“内网”不是同义词</h2>
+  <p>真交换机 + 网线 <code>0.1–0.3 ms</code> ｜ 普通 5GHz 路由器 <code>3–6 ms</code> ｜ 2.4GHz 随身 Wi-Fi <code>15–55 ms</code>。</p>
+  <p>差 50 倍，而这 50 倍，就是 20 t/s 和 3.4 t/s 的差别。任何讨论“局域网能不能做分布式推理”的方案，不把“局域网”具体到用什么线、几 GHz，就是在说一句没有内容的话。</p>
+
+  <h2>结论（冷的）</h2>
+  <p>按层切分只增加<b>容量</b>，不增加速度——层与层严格串行，加机器等于加排队。单卡装得下时，聚合永远更慢。唯一能同时保住容量和速度的形态是 <b>MoE</b>。</p>
+  <p>它只在很窄的区间里成立：模型超出单卡、组织不愿买卡、任务能等几秒、数据不能出内网。</p>
+
+  <h2>还有一个问题（热的）</h2>
+  <p>技术之外，这个项目真正想验证的是：<b>没有上级、没有合同、没有强制的时候，一群人能不能靠自己的规则，维持住一件共同的东西。</b></p>
+  <p>这件事不需要两台机器，只需要三五个人的四周。完整论述在 <a href="https://github.com/fanqin314/distributed-llm-benchmark/blob/main/VISION.md">VISION.md</a>。</p>
+
+  <div class="links">
+    <a href="https://github.com/fanqin314/distributed-llm-benchmark">GitHub 仓库</a>
+    <a href="https://github.com/fanqin314/distributed-llm-benchmark/blob/main/README.md">完整 README</a>
+    <a href="https://github.com/fanqin314/distributed-llm-benchmark/blob/main/VISION.md">VISION</a>
+    <a href="https://github.com/fanqin314/distributed-llm-benchmark/blob/main/llms.txt">llms.txt</a>
+  </div>
+
+  <footer>
+    彭馨田（fanqin314）· 2026-10-29 归档 · 文档 CC BY 4.0<br>
+    联系：QQ / 邮箱 <a href="mailto:2979919637@qq.com">2979919637</a><br>
+    如果你也在做相似的事——哪怕只是某一刻想过一样的问题——欢迎来对一下。
+  </footer>
+</main>
+</body>
+</html>
