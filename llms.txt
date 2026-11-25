@@ -17,6 +17,9 @@
 
 - `README.md` — full technical record, three-tier measurements, four corrected judgments, reproduction steps.
 - `VISION.md` — the non-technical question: can a group of peers govern a shared resource with their own rules?
+- `docs/同协异步-综述.md` — a survey of "collaborative asynchrony": consensus theory, swarm intelligence, decentralized training, commons governance; three testable propositions and a two-hour Mesa experiment design.
+- `docs/知识引用集.md` — annotated bibliography (what it is / how it relates / which part to read / how long).
+- `docs/references.bib` — BibTeX entries.
 - `experiments/exp01_baseline.md` — raw experiment log.
 - `PROGRESS.md` — daily progress notes.
 
